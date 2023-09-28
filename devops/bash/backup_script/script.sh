@@ -58,6 +58,7 @@ if [[ -z $Max_Size  ]]; then
 fi
 
 # creating a compressed archive
+create=false
 count=1
 
 for dir in ${Your_Dirs[@]}; do
@@ -78,13 +79,20 @@ for dir in ${Your_Dirs[@]}; do
 
     if [[ $? -eq 1 ]]; then
         echo "Error:"
-        echo "Check the permissions to create and the amount of remaining memory."
+        echo "Check the correctness of the path, the permissions to create and the amount of remaining memory."
     else
         echo "$time: add backup $backup" >> "$Log_File"
+        create=true
     fi
 
     count=$(( $count + 1 ))
 done
+
+# exit the script if a new archive is not created
+if [[ "$create" = "false" ]];then
+    echo "Failed to create any backup!!"
+    exit 1
+fi
 
 # converting the maximum space value (GB/MB) into bits
 delimeter=" "
